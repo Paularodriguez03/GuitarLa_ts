@@ -18,22 +18,8 @@ function useCart() {
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
 
-    const AddToCart = (item: Guitar) => {
-        const itemExist = cart.findIndex(itemCart => itemCart.id === item.id);
-        if (itemExist >= 0) {
-            if (cart[itemExist].quantity >= maxItems) return;
-            const updatedCart = [...cart];
-            updatedCart[itemExist].quantity += 1;
-            setCart(updatedCart);
-        } else {
-            const newItem = { ...item, quantity: 1 };
-            setCart([...cart, newItem]);
-        }
-    }
 
-    const RemoveToCart = (id: IdCart) => {
-        setCart((prevCart) => prevCart.filter((item: CartItem) => item.id !== id));
-    };
+
 
     const IncremetQuantity = (id: IdCart) => {
         const find = cart.find(item => item.id === id && item.quantity < maxItems);
@@ -59,7 +45,7 @@ function useCart() {
     const isEmpty = useMemo(() => cart.length === 0, [cart]);
     const cartTotal = useMemo(() => cart.reduce((total, item) => total + (item.price * item.quantity), 0), [cart]);
 
-    return { data, cart, AddToCart, RemoveToCart, IncremetQuantity, DecrementQuantity, ClearCart, isEmpty, cartTotal }
+    return { data, cart, IncremetQuantity, DecrementQuantity, ClearCart, isEmpty, cartTotal }
 }
 
 export default useCart

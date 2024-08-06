@@ -1,14 +1,15 @@
+import { Dispatch, useMemo } from "react";
 import type { CartItem, IdCart } from "../types/types";
+import { CartAaction } from "../hooks/reducer/cart-reducer";
 type HeaderPropos = {
   cart: CartItem[],
-  RemoveToCart: (id: IdCart) => void,
-  IncremetQuantity: (id: IdCart) => void,
-  DecrementQuantity: (id: IdCart) => void,
-  ClearCart: () => void,
-  isEmpty: boolean,
-  cartTotal: number
+  dispatch: Dispatch<CartAaction>,
 }
-export const Header = ({ cart, RemoveToCart, IncremetQuantity,DecrementQuantity, ClearCart, isEmpty, cartTotal}: HeaderPropos) => {
+export const Header = ({ cart,dispatch}: HeaderPropos) => {
+
+   // stateDeribado 
+   const isEmpty = useMemo(() => cart.length === 0, [cart]);
+   const cartTotal = useMemo(() => cart.reduce((total, item) => total + (item.price * item.quantity), 0), [cart]);
 
   return (
     <header className="py-5 header">
@@ -54,7 +55,7 @@ export const Header = ({ cart, RemoveToCart, IncremetQuantity,DecrementQuantity,
                               <button
                                 type="button"
                                 className="btn btn-dark"
-                                onClick={() => DecrementQuantity(item.id)}
+                                onClick={() => dispatch({ type: "decrement-quantity", payload: { id: item.id } })}
                               >
                                 -
                               </button>
@@ -62,7 +63,7 @@ export const Header = ({ cart, RemoveToCart, IncremetQuantity,DecrementQuantity,
                               <button
                                 type="button"
                                 className="btn btn-dark"
-                                onClick={() => IncremetQuantity(item.id)}
+                                onClick={() => dispatch({ type: "increment-quantity", payload: { id: item.id } })}
                               >
                                 +
                               </button>
@@ -71,7 +72,7 @@ export const Header = ({ cart, RemoveToCart, IncremetQuantity,DecrementQuantity,
                               <button
                                 className="btn btn-danger"
                                 type="button"
-                                onClick={() => RemoveToCart(item.id)}
+                                onClick={() => dispatch({ type: "remove-to-cart", payload: { id: item.id } })}
                               >
                                 X
                               </button>
@@ -82,7 +83,7 @@ export const Header = ({ cart, RemoveToCart, IncremetQuantity,DecrementQuantity,
                       </tbody>
                     </table>
                     <p className="text-end">Total pagar: <span className="fw-bold">$ {cartTotal}</span></p>
-                    <button className="btn btn-dark w-100 mt-3 p-2" onClick={ClearCart}>Vaciar Carrito</button>
+                    <button className="btn btn-dark w-100 mt-3 p-2" onClick={() => dispatch({ type: "clear-cart" })}>Vaciar Carrito</button>
                   </>
                 }
 
